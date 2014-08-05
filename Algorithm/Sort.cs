@@ -34,7 +34,12 @@ namespace Algorithm
             {
                 comparer = Comparer<T>.Default;
             }
+            else
+            {
+                throw new ArgumentException();
+            }
         }
+
         #region insertion sort
         public static T[] InsertionSort<T>(T[] arr, IComparer<T> comparer = null)
         {
@@ -48,7 +53,7 @@ namespace Algorithm
                 {
                     if (j == -1 || comparer.Compare(arr[i], ret[j]) >= 0)
                     {
-                        ret[j+1] = arr[i];
+                        ret[j + 1] = arr[i];
                         count++;
                         break;
                     }
@@ -59,23 +64,79 @@ namespace Algorithm
             return ret;
         }
         #endregion
-
+        #region merge sort
         public static T[] MergeSort<T>(T[] arr, IComparer<T> comparer = null)
         {
             Guard(arr, ref comparer);
-            return null;
+            var ret = MergeSort(arr, 0, arr.Length - 1, comparer);
+            return ret;
         }
 
+        private static T[] MergeSort<T>(T[] arr, int startIndex, int endIndex, IComparer<T> comparer)
+        {
+            if (startIndex == endIndex)//只有一个元素直接返回
+            {
+                return new T[] { arr[startIndex] };
+            }
+            var length = endIndex - startIndex + 1;
+            var mid = length / 2 - 1;
+            var a1 = MergeSort(arr, startIndex, mid, comparer);
+            var a2 = MergeSort(arr, mid + 1, endIndex, comparer);
+            var ret = Merge(a1, a2, comparer);
+            return ret;
+        }
+
+        private static T[] Merge<T>(T[] arr1, T[] arr2, IComparer<T> comparer)
+        {
+            var ret = new T[arr1.Length + arr2.Length];
+            var i = 0;
+            var j = 0;
+            T val = default(T);
+            do
+            {
+                if (i == arr1.Length)
+                {
+                    val = arr2[j++];
+                }
+                else if (j == arr2.Length)
+                {
+                    val = arr1[i++];
+                }
+                else
+                {
+                    if (comparer.Compare(arr1[i], arr2[j]) > 0)
+                    {
+                        val = arr2[j++];
+                    }
+                    else
+                    {
+                        val = arr1[i++];
+                    }
+                }
+                ret[i + j - 1] = val;
+            } while (i < arr1.Length || j < arr2.Length);
+            return ret;
+        }
+
+
+
+        #endregion
+
+        #region quicksort
         public static T[] QuickSort<T>(T[] arr, IComparer<T> comparer = null)
         {
             Guard(arr, ref comparer);
             return null;
         }
+        #endregion
+
+        #region heapsort
 
         public static T[] HeapSort<T>(T[] arr, IComparer<T> comparer = null)
         {
             Guard(arr, ref comparer);
             return null;
         }
+        #endregion
     }
 }
