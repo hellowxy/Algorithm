@@ -79,9 +79,9 @@ namespace Algorithm
                 return new T[] { arr[startIndex] };
             }
             var length = endIndex - startIndex + 1;
-            var mid = length / 2 - 1;
-            var a1 = MergeSort(arr, startIndex, mid, comparer);
-            var a2 = MergeSort(arr, mid + 1, endIndex, comparer);
+            var midIndex = startIndex + length / 2 - 1;
+            var a1 = MergeSort(arr, startIndex, midIndex, comparer);
+            var a2 = MergeSort(arr, midIndex + 1, endIndex, comparer);
             var ret = Merge(a1, a2, comparer);
             return ret;
         }
