@@ -64,6 +64,7 @@ namespace Algorithm
             return ret;
         }
         #endregion
+
         #region merge sort
         public static T[] MergeSort<T>(T[] arr, IComparer<T> comparer = null)
         {
@@ -123,11 +124,58 @@ namespace Algorithm
         #endregion
 
         #region quicksort
-        public static T[] QuickSort<T>(T[] arr, IComparer<T> comparer = null)
+        public static T[] QuickSort_Native<T>(T[] arr, IComparer<T> comparer = null)
         {
             Guard(arr, ref comparer);
-            return null;
+            Quick(arr, 0, arr.Length - 1, comparer);
+            return arr;
         }
+
+        private static void Quick<T>(T[] arr, int startIndex, int endIndex, IComparer<T> comparer)
+        {
+            if (startIndex >= endIndex)
+            {
+                return;
+            }
+            var pivotIndex = Partition(arr, startIndex, endIndex, comparer);
+            Quick<T>(arr, startIndex, pivotIndex - 1, comparer);
+            Quick<T>(arr, pivotIndex + 1, endIndex, comparer);
+        }
+
+        private static int Partition<T>(T[] arr, int startIndex, int endIndex, IComparer<T> comparer)
+        {
+            var pivotIndex = startIndex;
+            var pivotValue = arr[pivotIndex];//选取待处理数组的第一个元素作为pivot
+            var i = startIndex + 1;
+            var j = endIndex;
+            T temp = default(T);
+            while (true)
+            {
+                while (i <= j && comparer.Compare(arr[i], pivotValue) <= 0)
+                {
+                    i++;
+                }
+
+                while (j >= i && comparer.Compare(arr[j], pivotValue) >= 0)
+                {
+                    j--;
+                }
+
+                if (i > j)
+                {
+                    arr[pivotIndex] = arr[i - 1];
+                    arr[i - 1] = pivotValue;
+                    return i - 1;
+                }
+                temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+                i++;
+                j--;
+            }
+
+        }
+
         #endregion
 
         #region heapsort

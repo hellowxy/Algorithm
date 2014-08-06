@@ -24,13 +24,27 @@ namespace Test
 
 
            
-           var ret = Algorithm.Sort.MergeSort(new[] { 1 ,3,2});
+           //var ret = Algorithm.Sort.MergeSort(new[] { 1 ,3,2});
+           // Output(ret);
+           // ret = Algorithm.Sort.MergeSort(new[] { 1 ,2,3,4,5,6,7});
+           // Output(ret);
+           // ret = Algorithm.Sort.MergeSort(new[] { 7,6,5,4,3,2,1 });
+           // Output(ret);
+           // ret = Algorithm.Sort.MergeSort(new[] { 99,10,9,8,100 });
+           // Output(ret);
+
+
+            var ret = Algorithm.Sort.QuickSort_Native(new[] {1});
             Output(ret);
-            ret = Algorithm.Sort.MergeSort(new[] { 1 ,2,3,4,5,6,7});
+            ret = Algorithm.Sort.QuickSort_Native(new[] { 1,2 });
             Output(ret);
-            ret = Algorithm.Sort.MergeSort(new[] { 7,6,5,4,3,2,1 });
+            ret = Algorithm.Sort.QuickSort_Native(new[] { 1,1 });
             Output(ret);
-            ret = Algorithm.Sort.MergeSort(new[] { 99,10,9,8,100 });
+            ret = Algorithm.Sort.QuickSort_Native(new[] { 1 ,2,2,3,3,4});
+            Output(ret);
+            ret = Algorithm.Sort.QuickSort_Native(new[] { 4,4,3,3,2,1,1 });
+            Output(ret);
+            ret = Algorithm.Sort.QuickSort_Native(new[] { 7,3,9,4,0,1,5 });
             Output(ret);
             Console.ReadKey();
         }
