@@ -148,7 +148,7 @@ namespace Algorithm
             var pivotValue = arr[pivotIndex];//选取待处理数组的第一个元素作为pivot
             var i = startIndex + 1;
             var j = endIndex;
-            T temp = default(T);
+            T temp;
             while (true)
             {
                 while (i <= j && comparer.Compare(arr[i], pivotValue) <= 0)
