@@ -40,6 +40,28 @@ namespace Algorithm
             }
         }
 
+        #region bubble sort
+
+        public static T[] BubbleSort<T>(T[] arr, IComparer<T> comparer = null)
+        {
+            Guard(arr, ref comparer);
+            for (int i = arr.Length; i > 1; --i)
+            {
+                for (int j = 0; j < i-1; j++)
+                {
+                    if (comparer.Compare(arr[j],arr[j+1]) > 0)
+                    {
+                        T t = arr[j];
+                        arr[j] = arr[j + 1];
+                        arr[j + 1] = t;
+                    }
+                }
+            }
+            return arr;
+        }
+
+        #endregion
+
         #region insertion sort
         public static T[] InsertionSort<T>(T[] arr, IComparer<T> comparer = null)
         {
