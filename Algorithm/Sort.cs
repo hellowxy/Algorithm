@@ -47,9 +47,9 @@ namespace Algorithm
             Guard(arr, ref comparer);
             for (int i = arr.Length; i > 1; --i)
             {
-                for (int j = 0; j < i-1; j++)
+                for (int j = 0; j < i - 1; j++)
                 {
-                    if (comparer.Compare(arr[j],arr[j+1]) > 0)
+                    if (comparer.Compare(arr[j], arr[j + 1]) > 0)
                     {
                         T t = arr[j];
                         arr[j] = arr[j + 1];
@@ -205,7 +205,72 @@ namespace Algorithm
         public static T[] HeapSort<T>(T[] arr, IComparer<T> comparer = null)
         {
             Guard(arr, ref comparer);
-            return null;
+            BuildInitialHeap(arr, comparer);
+            var len = arr.Length;
+            T temp = arr[0];
+            arr[0] = arr[len - 1];
+            arr[len - 1] = temp;
+            len--;
+            while (len > 1)
+            {
+                Ajust(arr, 0, len - 1, comparer);
+                temp = arr[0];
+                arr[0] = arr[len - 1];
+                arr[len - 1] = temp;
+                --len;
+            }
+
+            return arr;
+        }
+
+        /// <summary>
+        /// Builds the initial heap.
+        /// 构造初始堆
+        /// </summary>
+        private static void BuildInitialHeap<T>(T[] arr, IComparer<T> comparer)
+        {
+            var lastNonLeafNodeIndex = arr.Length / 2 - 1;
+            for (int i = lastNonLeafNodeIndex; i >= 0; --i)
+            {
+                Ajust(arr, i, arr.Length - 1, comparer);
+            }
+        }
+
+        /// <summary>
+        /// 调整堆,使其重新成为一个大顶堆
+        /// </summary>
+        private static void Ajust<T>(T[] arr, int rootIndex, int lastNodeIndex, IComparer<T> comparer)
+        {
+            while (true)
+            {
+                var leftChildIndex = 2 * rootIndex + 1;
+                var rightChildIndex = 2 * rootIndex + 2;
+                var hasLeftChild = leftChildIndex <= lastNodeIndex;
+                var hasRightChild = rightChildIndex <= lastNodeIndex;
+                if (!hasLeftChild || //不存在左子树,说明是叶子节点,不需要调整
+                    (comparer.Compare(arr[rootIndex], arr[leftChildIndex]) >= 0 && //根节点的值大于等于左子树的根节点值
+                    (!hasRightChild || comparer.Compare(arr[rootIndex], arr[rightChildIndex]) >= 0)))//不存在右子树,或者根节点值大于等于右子树根节点值,不需要调整
+                {
+                    return;
+                }
+
+                var rootValue = arr[rootIndex];
+                var leftValue = arr[leftChildIndex];
+                if (hasRightChild)//左右子树都存在
+                {
+                    var rightValue = arr[rightChildIndex];
+                    if (comparer.Compare(rightValue, leftValue) > 0)
+                    {
+                        arr[rootIndex] = rightValue;
+                        arr[rightChildIndex] = rootValue;
+                        rootIndex = rightChildIndex;
+                        continue;
+                    }
+                }
+                arr[rootIndex] = leftValue;
+                arr[leftChildIndex] = rootValue;
+                rootIndex = leftChildIndex;
+            }
         }
         #endregion
     }
