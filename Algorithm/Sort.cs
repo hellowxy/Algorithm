@@ -9,7 +9,7 @@
 //Machine Name:    WXY-PC
 //Namespace:       Algorithm
 //Function:                
-//Description:    Implementation of popular sort algorithms, include insertion sort, quicksort, merge sort and heapsort
+//Description:    Implementation of common sort algorithms, including bubble sort, insertion sort, quicksort, merge sort and heapsort
 //****************************************************************************************************
 
 using System;
@@ -22,29 +22,11 @@ namespace Algorithm
 {
     public static class Sort
     {
-        private static void Guard<T>(T[] arr, ref IComparer<T> comparer)
-        {
-            if (arr == null || arr.Length == 0)
-            {
-                throw new ArgumentException();
-            }
-            var tType = typeof(T);
-            if (comparer == null && (typeof(IComparable<T>).IsAssignableFrom(tType)) ||
-                typeof(IComparable).IsAssignableFrom(tType))
-            {
-                comparer = Comparer<T>.Default;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
-        }
-
         #region bubble sort
 
         public static T[] BubbleSort<T>(T[] arr, IComparer<T> comparer = null)
         {
-            Guard(arr, ref comparer);
+            Common.Guard(arr, ref comparer);
             for (int i = arr.Length; i > 1; --i)
             {
                 for (int j = 0; j < i - 1; j++)
@@ -65,7 +47,7 @@ namespace Algorithm
         #region insertion sort
         public static T[] InsertionSort<T>(T[] arr, IComparer<T> comparer = null)
         {
-            Guard(arr, ref comparer);
+            Common.Guard(arr, ref comparer);
             var ret = new T[arr.Length];
             ret[0] = arr[0];
             var count = 1;
@@ -90,7 +72,7 @@ namespace Algorithm
         #region merge sort
         public static T[] MergeSort<T>(T[] arr, IComparer<T> comparer = null)
         {
-            Guard(arr, ref comparer);
+            Common.Guard(arr, ref comparer);
             var ret = MergeSort(arr, 0, arr.Length - 1, comparer);
             return ret;
         }
@@ -148,7 +130,7 @@ namespace Algorithm
         #region quicksort
         public static T[] QuickSort_Native<T>(T[] arr, IComparer<T> comparer = null)
         {
-            Guard(arr, ref comparer);
+            Common.Guard(arr, ref comparer);
             Quick(arr, 0, arr.Length - 1, comparer);
             return arr;
         }
@@ -204,7 +186,7 @@ namespace Algorithm
 
         public static T[] HeapSort<T>(T[] arr, IComparer<T> comparer = null)
         {
-            Guard(arr, ref comparer);
+            Common.Guard(arr, ref comparer);
             BuildInitialHeap(arr, comparer);
             var len = arr.Length;
             T temp = arr[0];
