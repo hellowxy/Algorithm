@@ -13,10 +13,9 @@ namespace UnitTest
         public void Test_ArrayIsNull()
         {
             int[] arr = null;
-            IComparer<int> comparer = Comparer<int>.Default;
             try
             {
-                Common.Guard(arr,ref comparer);
+                Common.GuardArrayNotEmpty(arr);
             }
             catch (Exception exception)
             {
@@ -28,11 +27,10 @@ namespace UnitTest
         [TestMethod]
         public void Test_ArrayIsEmpty()
         {
-            var arr = new int[]{1,2,3};
-            IComparer<int> comparer = Comparer<int>.Default;
+            var arr = new int[0];
             try
             {
-                Common.Guard(arr, ref comparer);
+                Common.GuardArrayNotEmpty(arr);
             }
             catch (Exception exception)
             {
@@ -44,21 +42,19 @@ namespace UnitTest
         [TestMethod]
         public void Test_ComparerIsNull_TIsIComparable()
         {
-            var arr = new[] { 1,2,3};
             IComparer<int> comparer = null;
-            Common.Guard(arr, ref comparer);
+            Common.GuardComparer(ref comparer);
             Assert.IsInstanceOfType(comparer,typeof(Comparer<int>));
-            Assert.IsTrue(comparer == Comparer<int>.Default);
+            Assert.IsTrue(object.ReferenceEquals(comparer,Comparer<int>.Default));
         }
 
         [TestMethod]
         public void Test_ComparerIsNull_TIsNotIComparable()
         {
-            var arr = new Object[] { new object(), new object()};
             IComparer<object> comparer = null;
             try
             {
-                Common.Guard(arr, ref comparer);
+                Common.GuardComparer(ref comparer);
             }
             catch (Exception exception)
             {

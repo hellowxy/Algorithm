@@ -22,14 +22,22 @@ namespace Algorithm
 {
     public static class Common
     {
-        public static void Guard<T>(T[] arr, ref IComparer<T> comparer)
+        public static void GuardArrayNotEmpty<T>(T[] arr)
         {
             if (arr == null || arr.Length == 0)
             {
                 throw new ArgumentException();
             }
+        }
+
+        public static void GuardComparer<T>(ref IComparer<T> comparer)
+        {
+            if (comparer != null)
+            {
+                return;
+            }
             var tType = typeof(T);
-            if (comparer == null && (typeof(IComparable<T>).IsAssignableFrom(tType)) ||
+            if ((typeof(IComparable<T>).IsAssignableFrom(tType)) ||
                 typeof(IComparable).IsAssignableFrom(tType))
             {
                 comparer = Comparer<T>.Default;

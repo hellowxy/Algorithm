@@ -26,7 +26,8 @@ namespace Algorithm
 
         public static T[] BubbleSort<T>(T[] arr, IComparer<T> comparer = null)
         {
-            Common.Guard(arr, ref comparer);
+            Common.GuardArrayNotEmpty(arr);
+            Common.GuardComparer(ref comparer);
             for (int i = arr.Length; i > 1; --i)
             {
                 for (int j = 0; j < i - 1; j++)
@@ -47,7 +48,8 @@ namespace Algorithm
         #region insertion sort
         public static T[] InsertionSort<T>(T[] arr, IComparer<T> comparer = null)
         {
-            Common.Guard(arr, ref comparer);
+            Common.GuardArrayNotEmpty(arr);
+            Common.GuardComparer(ref comparer);
             var ret = new T[arr.Length];
             ret[0] = arr[0];
             var count = 1;
@@ -70,9 +72,11 @@ namespace Algorithm
         #endregion
 
         #region merge sort
+
         public static T[] MergeSort<T>(T[] arr, IComparer<T> comparer = null)
         {
-            Common.Guard(arr, ref comparer);
+            Common.GuardArrayNotEmpty(arr);
+            Common.GuardComparer(ref comparer);
             var ret = MergeSort(arr, 0, arr.Length - 1, comparer);
             return ret;
         }
@@ -123,14 +127,13 @@ namespace Algorithm
             return ret;
         }
 
-
-
         #endregion
 
         #region quicksort
         public static T[] QuickSort_Native<T>(T[] arr, IComparer<T> comparer = null)
         {
-            Common.Guard(arr, ref comparer);
+            Common.GuardArrayNotEmpty(arr);
+            Common.GuardComparer(ref comparer);
             Quick(arr, 0, arr.Length - 1, comparer);
             return arr;
         }
@@ -186,7 +189,8 @@ namespace Algorithm
 
         public static T[] HeapSort<T>(T[] arr, IComparer<T> comparer = null)
         {
-            Common.Guard(arr, ref comparer);
+            Common.GuardArrayNotEmpty(arr);
+            Common.GuardComparer(ref comparer);
             BuildInitialHeap(arr, comparer);
             var len = arr.Length;
             T temp = arr[0];
