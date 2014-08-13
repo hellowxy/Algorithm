@@ -75,7 +75,7 @@ namespace Algorithm.BST
 
         public bool Delete(TKey key)
         {
-
+            return false;
         }
 
         public bool TryGetData(TKey key, out TData data)
@@ -84,31 +84,53 @@ namespace Algorithm.BST
             return false;
         }
 
-        public void Traverse(TraverseType traverseType, Action<TKey, TData> traverseAction)
+        public void Traverse(TraverseType traverseType, Action<TKey, TData> visitAction)
         {
-            if (_root == null)
-            {
-                return;
-            }
-            var cur = _root;
-            while (true)
-            {
-                
-            }
             switch (traverseType)
             {
                 case TraverseType.Inorder:
+                    InorderTraverse(_root,visitAction);
                     break;
                 case TraverseType.Preorder:
+                    PreorderTraverse(_root, visitAction);
                     break;
                 case TraverseType.Postorder:
+                    PostorderTraverse(_root, visitAction);
                     break;
                 default:
+                    InorderTraverse(_root, visitAction);
                     break;
             }
         }
 
-        private void InorderTraverse()
-        { }
+        private void InorderTraverse(TreeNode<TKey,TData> root, Action<TKey, TData> visitAction)
+        {
+            if (root != null)
+            {
+                InorderTraverse(root.Left,visitAction);
+                visitAction(root.Key, root.Data);
+                InorderTraverse(root.Right,visitAction);
+            }
+        }
+
+        private void PreorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
+        {
+            if (root != null)
+            {
+                visitAction(root.Key, root.Data);
+                InorderTraverse(root.Left, visitAction);
+                InorderTraverse(root.Right, visitAction);
+            }
+        }
+
+        private void PostorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
+        {
+            if (root != null)
+            {
+                InorderTraverse(root.Left, visitAction);
+                InorderTraverse(root.Right, visitAction);
+                visitAction(root.Key, root.Data);
+            }
+        }
     }
 }
