@@ -34,9 +34,15 @@ namespace Algorithm.BST
 
         private TreeNode<TKey, TData> FindNode(TKey key)
         {
-            return null;
-        }
+            var cur = _root;
+            var cmpResult = 0;
+            while (cur != null && (cmpResult = _comparer.Compare(key, cur.Key)) != 0)
+            {
+                cur = cmpResult > 0 ? cur.Right : cur.Left;
+            }
 
+            return cur;
+        }
 
         public void Insert(TKey key, TData data)
         {
@@ -57,11 +63,20 @@ namespace Algorithm.BST
                     cur = cur.Left;
                     insertLeft = true;
                 }
-                else
+                else if (_comparer.Compare(cur.Key, node.Key) < 0)
                 {
                     cur = cur.Right;
                     insertLeft = false;
                 }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (cur != null)
+            {
+                cur.Data = data;
             }
             if (insertLeft)
             {
@@ -75,13 +90,28 @@ namespace Algorithm.BST
 
         public bool Delete(TKey key)
         {
+            var node = FindNode(key);
+            if (node == null)
+            {
+                return false;
+            }
+            
+
+
             return false;
         }
 
         public bool TryGetData(TKey key, out TData data)
         {
             data = default(TData);
-            return false;
+            var node = FindNode(key);
+
+            if (node == null)
+            {
+                return false;
+            }
+            data = node.Data;
+            return true;
         }
 
         public void Traverse(TraverseType traverseType, Action<TKey, TData> visitAction)
@@ -89,7 +119,7 @@ namespace Algorithm.BST
             switch (traverseType)
             {
                 case TraverseType.Inorder:
-                    InorderTraverse(_root,visitAction);
+                    InorderTraverse(_root, visitAction);
                     break;
                 case TraverseType.Preorder:
                     PreorderTraverse(_root, visitAction);
@@ -103,13 +133,13 @@ namespace Algorithm.BST
             }
         }
 
-        private void InorderTraverse(TreeNode<TKey,TData> root, Action<TKey, TData> visitAction)
+        private void InorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
         {
             if (root != null)
             {
-                InorderTraverse(root.Left,visitAction);
+                InorderTraverse(root.Left, visitAction);
                 visitAction(root.Key, root.Data);
-                InorderTraverse(root.Right,visitAction);
+                InorderTraverse(root.Right, visitAction);
             }
         }
 
