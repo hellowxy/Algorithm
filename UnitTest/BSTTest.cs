@@ -14,7 +14,7 @@ namespace UnitTest
         public void TestInsert()
         {
             var bst = new CommonBST<int, int>();
-            var i = 0;
+
             int data;
             var get = bst.TryGetData(4, out data);
             Assert.IsFalse(get);
@@ -30,45 +30,37 @@ namespace UnitTest
             Assert.IsTrue(data == 10);
 
             bst.Clear();
-
-            for (; i < 8; i++)
+            var i = 0;
+            var keys = new int[] { 4, 2, 6, 1, 3, 7, 8 };
+            for (; i < keys.Length; i++)
             {
-                bst.InsertOrUpdate(i * 2, i);
+                bst.InsertOrUpdate(keys[i], keys[i]);
             }
-            var arrData = new int[8];
-            var arrKey = new int[8];
+
+            var arr = new int[7];
             i = 0;
-            bst.Traverse(TraverseType.Inorder, (k, d) =>
-            {
-                arrData[i] = d;
-                arrKey[i] = k;
-                i++;
-            });
-            Console.WriteLine();
-            CollectionAssert.AreEqual(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 }, arrData);
-            CollectionAssert.AreEqual(new int[] { 0, 2, 4, 6, 8, 10, 12, 14 }, arrKey);
+            bst.Traverse(TraverseType.Inorder, (k, d) => arr[i++] = k);
+            CollectionAssert.AreEqual(new int[] { 1, 2, 3, 4, 6, 7, 8 }, arr);
+            i = 0;
+            bst.Traverse(TraverseType.Preorder, (k, d) => arr[i++] = k);
+            CollectionAssert.AreEqual(new int[] { 4, 2, 1, 3, 6, 7, 8 }, arr);//通过中序遍历和先序遍历得到的结果确认树的形状
             bst.InsertOrUpdate(5, 10);
             i = 0;
-            arrKey = new int[9];
-            arrData = new int[9];
-            bst.Traverse(TraverseType.Inorder, (k, d) =>
-            {
-                arrData[i] = d;
-                arrKey[i] = k;
-                i++;
-            });
-            CollectionAssert.AreEqual(new int[] { 0, 1, 2, 10, 3, 4, 5, 6, 7 }, arrData);
-            CollectionAssert.AreEqual(new int[] { 0, 2, 4, 5, 6, 8, 10, 12, 14 }, arrKey);
+            arr = new int[8];
+            bst.Traverse(TraverseType.Inorder, (k, d) => arr[i++] = k);
+            CollectionAssert.AreEqual(new int[] { 1, 2, 3, 4, 5, 6, 7, 8 }, arr);
+            i = 0;
+            bst.Traverse(TraverseType.Preorder, (k, d) => arr[i++] = k);
+            CollectionAssert.AreEqual(new int[] { 4, 2, 1, 3, 6, 5, 7, 8 }, arr);
+
+            get = bst.TryGetData(5, out data);
+            Assert.IsTrue(get);
+            Assert.IsTrue(data == 10);
+
             bst.InsertOrUpdate(5, -2);
             i = 0;
-            bst.Traverse(TraverseType.Inorder, (k, d) =>
-            {
-                arrData[i] = d;
-                arrKey[i] = k;
-                i++;
-            });
-            CollectionAssert.AreEqual(new int[] { 0, 1, 2, -2, 3, 4, 5, 6, 7 }, arrData);
-            CollectionAssert.AreEqual(new int[] { 0, 2, 4, 5, 6, 8, 10, 12, 14 }, arrKey);
+            bst.Traverse(TraverseType.Preorder, (k, d) => arr[i++] = k);
+            CollectionAssert.AreEqual(new int[] { 4, 2, 1, 3, 6, 5, 7, 8 }, arr);
         }
 
         [TestMethod]
@@ -98,18 +90,8 @@ namespace UnitTest
             var arr1 = new int[7];
             i = 0;
             bst.Traverse(TraverseType.Preorder, (k, d) => arr1[i++] = k);
-            foreach (var i1 in arr1)
-            {
-                Console.Write(i1);
-                Console.Write(" ");
-            }
-            Console.WriteLine();
-            foreach (var i1 in arr)
-            {
-                Console.Write(i1);
-                Console.Write(" ");
-            }
-            Console.WriteLine();
+
+
         }
     }
 }
