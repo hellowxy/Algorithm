@@ -32,60 +32,109 @@ namespace Algorithm.BST
             _root = null;
         }
 
-        private TreeNode<TKey, TData> FindNode(TKey key)
+        private TreeNode<TKey, TData> FindNode(TKey key,bool createIfNotFound = false)
         {
             var cur = _root;
             var cmpResult = 0;
+            TreeNode<TKey, TData> pre = null;
             while (cur != null && (cmpResult = _comparer.Compare(key, cur.Key)) != 0)
             {
+                pre = cur;
                 cur = cmpResult > 0 ? cur.Right : cur.Left;
             }
-
-            return cur;
-        }
-
-        public void Insert(TKey key, TData data)
-        {
-            var node = new TreeNode<TKey, TData>(key, data);
-            if (_root == null)
+            if (cur == null && createIfNotFound)
             {
-                _root = node;
-                return;
-            }
-            var cur = _root;
-            TreeNode<TKey, TData> pre = null;
-            var insertLeft = false;
-            while (cur != null)
-            {
-                pre = cur;
-                if (_comparer.Compare(cur.Key, node.Key) > 0)
+                cur = new TreeNode<TKey, TData>(key,default(TData));
+                if (_root == null)
                 {
-                    cur = cur.Left;
-                    insertLeft = true;
-                }
-                else if (_comparer.Compare(cur.Key, node.Key) < 0)
-                {
-                    cur = cur.Right;
-                    insertLeft = false;
+                    _root = cur;
                 }
                 else
                 {
-                    break;
+                    cur.Parent = pre;
+                    if (cmpResult > 0)
+                    {
+                        pre.Right = cur;
+                    }
+                    else
+                    {
+                        pre.Left = cur;
+                    }
                 }
             }
+            return cur;
+        }
 
-            if (cur != null)
+        private void InorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
+        {
+            if (root != null)
             {
-                cur.Data = data;
+                InorderTraverse(root.Left, visitAction);
+                visitAction(root.Key, root.Data);
+                InorderTraverse(root.Right, visitAction);
             }
-            if (insertLeft)
+        }
+
+        private void PreorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
+        {
+            if (root != null)
             {
-                pre.Left = node;
+                visitAction(root.Key, root.Data);
+                InorderTraverse(root.Left, visitAction);
+                InorderTraverse(root.Right, visitAction);
+            }
+        }
+
+        private void PostorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
+        {
+            if (root != null)
+            {
+                InorderTraverse(root.Left, visitAction);
+                InorderTraverse(root.Right, visitAction);
+                visitAction(root.Key, root.Data);
+            }
+        }
+
+        private bool IsLeaf(TreeNode<TKey, TData> node)
+        {
+            return node.Left == null && node.Right == null;
+        }
+
+        /// <summary>
+        /// 将<see cref="child"/>与<see cref="node"/>的父节点连接
+        /// </summary>
+        /// <param name="node">The node.</param>
+        /// <param name="child">The child.</param>
+        private void ConcatWithParent(TreeNode<TKey, TData> node, TreeNode<TKey, TData> child)
+        {
+            if (node.Parent == null)//父节点为null,说明是根节点
+            {
+                _root = child;
+            }
+            else if (node.Parent.Left == node)
+            {
+                node.Parent.Left = child;
             }
             else
             {
-                pre.Right = node;
+                node.Parent.Right = child;
             }
+        }
+
+        public void Clear()
+        {
+            _root = null;
+        }
+
+        public bool IsEmpty()
+        {
+            return _root == null;
+        }
+
+        public void InsertOrUpdate(TKey key, TData data)
+        {
+            var node = FindNode(key, true);
+            node.Data = data;
         }
 
         public bool Delete(TKey key)
@@ -96,9 +145,19 @@ namespace Algorithm.BST
                 return false;
             }
             
+            if (IsLeaf(node))
+            {
+                ConcatWithParent(node,null);
+                return true;
+            }
+            var leftNull = false;
+            if ( (leftNull = (node.Left == null)) || node.Right == null)//node为单支节点
+            {
+                ConcatWithParent(node, leftNull ? node.Right : node.Left);
+                return true;
+            }
 
-
-            return false;
+            return true;
         }
 
         public bool TryGetData(TKey key, out TData data)
@@ -130,36 +189,6 @@ namespace Algorithm.BST
                 default:
                     InorderTraverse(_root, visitAction);
                     break;
-            }
-        }
-
-        private void InorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
-        {
-            if (root != null)
-            {
-                InorderTraverse(root.Left, visitAction);
-                visitAction(root.Key, root.Data);
-                InorderTraverse(root.Right, visitAction);
-            }
-        }
-
-        private void PreorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
-        {
-            if (root != null)
-            {
-                visitAction(root.Key, root.Data);
-                InorderTraverse(root.Left, visitAction);
-                InorderTraverse(root.Right, visitAction);
-            }
-        }
-
-        private void PostorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
-        {
-            if (root != null)
-            {
-                InorderTraverse(root.Left, visitAction);
-                InorderTraverse(root.Right, visitAction);
-                visitAction(root.Key, root.Data);
             }
         }
     }
