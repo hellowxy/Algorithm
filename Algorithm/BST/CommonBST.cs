@@ -32,6 +32,39 @@ namespace Algorithm.BST
             _root = null;
         }
 
+
+        #region traverse
+        private void InorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
+        {
+            if (root != null)
+            {
+                InorderTraverse(root.Left, visitAction);
+                visitAction(root.Key, root.Data);
+                InorderTraverse(root.Right, visitAction);
+            }
+        }
+
+        private void PreorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
+        {
+            if (root != null)
+            {
+                visitAction(root.Key, root.Data);
+                PreorderTraverse(root.Left, visitAction);
+                PreorderTraverse(root.Right, visitAction);
+            }
+        }
+
+        private void PostorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
+        {
+            if (root != null)
+            {
+                PostorderTraverse(root.Left, visitAction);
+                PostorderTraverse(root.Right, visitAction);
+                visitAction(root.Key, root.Data);
+            }
+        }
+        #endregion
+
         private TreeNode<TKey, TData> FindNode(TKey key,bool createIfNotFound = false)
         {
             var cur = _root;
@@ -63,36 +96,6 @@ namespace Algorithm.BST
                 }
             }
             return cur;
-        }
-
-        private void InorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
-        {
-            if (root != null)
-            {
-                InorderTraverse(root.Left, visitAction);
-                visitAction(root.Key, root.Data);
-                InorderTraverse(root.Right, visitAction);
-            }
-        }
-
-        private void PreorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
-        {
-            if (root != null)
-            {
-                visitAction(root.Key, root.Data);
-                InorderTraverse(root.Left, visitAction);
-                InorderTraverse(root.Right, visitAction);
-            }
-        }
-
-        private void PostorderTraverse(TreeNode<TKey, TData> root, Action<TKey, TData> visitAction)
-        {
-            if (root != null)
-            {
-                InorderTraverse(root.Left, visitAction);
-                InorderTraverse(root.Right, visitAction);
-                visitAction(root.Key, root.Data);
-            }
         }
 
         private bool IsLeaf(TreeNode<TKey, TData> node)
@@ -137,7 +140,7 @@ namespace Algorithm.BST
             node.Data = data;
         }
 
-        public bool Delete(TKey key)
+        public bool Remove(TKey key)
         {
             var node = FindNode(key);
             if (node == null)
@@ -157,6 +160,14 @@ namespace Algorithm.BST
                 return true;
             }
 
+            var successor = node.Right;//找到node的后继节点,后继节点是node右子树中key最小的节点
+            while (successor.Left != null)
+            {
+                successor = successor.Left;
+            }
+            node.Key = successor.Key;
+            node.Data = successor.Data;
+            successor.Parent.Left = successor.Right;
             return true;
         }
 
